@@ -8,7 +8,7 @@ import (
 const Directory = "./config"
 
 func getConfigFiles() []string {
-	return []string{"parser_config", "bot_config", "bot_messages"}
+	return []string{"bot_config", "bot_messages"}
 }
 
 func Init() {
@@ -16,7 +16,8 @@ func Init() {
 
 	for _, filePath := range getConfigFiles() {
 		viper.SetConfigName(filePath)
-		err := viper.MergeInConfig(); if err != nil {
+		err := viper.MergeInConfig()
+		if err != nil {
 			log.Fatal(err)
 		}
 	}

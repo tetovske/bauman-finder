@@ -25,3 +25,6 @@ all: app-setup-and-up
 
 app-bot-bash:
 	docker-compose run --rm --no-deps --name bot_service ${APP} bash
+
+app-up-local: build-app
+	./.bin/bot

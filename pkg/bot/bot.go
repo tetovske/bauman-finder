@@ -2,7 +2,7 @@ package bot
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/tetovske/enrollments-parser/pkg/bot/strategies/commands"
+	"github.com/tetovske/enrollments-parser/pkg/bot/strategies"
 	"log"
 )
 
@@ -15,7 +15,8 @@ func NewBot(botApi *tgbotapi.BotAPI) *Bot {
 }
 
 func (bot *Bot) Start() error {
-	updates, err := bot.initializeUpdates(); if err != nil {
+	updates, err := bot.initializeUpdates()
+	if err != nil {
 		return err
 	}
 
@@ -41,18 +42,20 @@ func (bot *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 
 		log.Printf("[%s] Message: %s", update.Message.From.UserName, update.Message.Text)
 
-		err := bot.handleUpdate(update); if err != nil {
+		err := bot.handleUpdate(update)
+		if err != nil {
 			log.Fatal(err)
 		}
 	}
 }
 
 func (bot *Bot) handleUpdate(upd tgbotapi.Update) error {
-	instantResponse, err := commands.NewStartStrategy().Handle(&upd); if err != nil {
+	resp, err := strategies.StrategyFactory(&upd).Handle(&upd)
+	if err != nil {
 		return err
 	}
 
-	err = instantResponse.SendMessage(bot.botApi)
+	err = resp.SendMessage(bot.botApi)
 
 	return err
 }
